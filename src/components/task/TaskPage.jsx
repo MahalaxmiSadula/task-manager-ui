@@ -3,9 +3,6 @@ import NewTask from "./NewTask";
 import TaskList from "./TaskList";
 
 const TaskPage = () => {
-  //hooks
-  // const [tasks, setTasks] = useState([]);
-
   const [tasks, setTasks] = useState(() => {
     const localValue = localStorage.getItem("ITEMS");
     if (localValue == null) return [];

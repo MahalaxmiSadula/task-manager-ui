@@ -1,28 +1,42 @@
 import React, { useState } from "react";
-import axios from "axios";
-import SignUp from "../signup/SignUp";
+import { useNavigate } from "react-router-dom";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    console.log("signin clicked");
+    const signUpData = {
+      email,
+      password,
+    };
     try {
-      const response = await axios.post("/api/auth/signin", {
-        email,
-        password,
+      const response = await fetch("http://localhost:8080/api/v1/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signUpData),
       });
+      console.log("data11111", response);
+      if (!response?.ok) {
+        throw new Error("Something went wrong");
+      }
 
+      const data = await response?.json();
+      console.log("Data", data);
+      console.log("response.data", data.token);
       // Save the token to local storage
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", data.token);
 
-      // Redirect to the home page
-      window.location.href = "/";
+      // If the request is successful, navigate to the TaskPage
+      navigate("/task-page");
     } catch (error) {
       // Handle error
-      console.error(error);
+      console.error("Error:", error);
     }
   };
 
@@ -48,6 +62,7 @@ export const SignIn = () => {
 
           <button type="submit">Sign In</button>
         </form>
+        <button>{"Don't have an account? Sign Up"}</button>
       </div>
     </>
   );

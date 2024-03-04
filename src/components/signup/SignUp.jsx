@@ -81,6 +81,7 @@ const SignUp = () => {
         />{" "}
         <button type="submit">Sign Up</button>
       </form>
+      <button>'Already have an account? Sign In'</button>
     </>
   );
 };
