@@ -1,25 +1,49 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 const SignUp = () => {
-  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const signUpData = {
+      firstName,
+      lastName,
+      email,
+      password,
+    };
     try {
-      await axios.post("/api/v1/auth/signup", {
-        username,
-        email,
-        password,
+      const response = await fetch("http://localhost:8080/api/v1/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signUpData),
       });
-      // Redirect to the sign-in page
-      window.location.href = "/api/v1/auth/signup";
+      // .then(() => {
+      //   console.log("new signup", response);
+      // });
+
+      console.log("new signup", response);
+
+      if (!response?.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const data = await response?.json();
+      console.log("Data", data);
+
+      // Clear form fields
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
     } catch (error) {
       // Handle error
-      console.error(error);
+      console.error("Error:", error);
     }
   };
 
@@ -27,12 +51,19 @@ const SignUp = () => {
     <>
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="firstName">First Name:</label>
         <input
           type="text"
-          id="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
+          id="firstname"
+          value={firstName}
+          onChange={(event) => setFirstName(event.target.value)}
+        />{" "}
+        <label htmlFor="lastName">Last Name:</label>
+        <input
+          type="text"
+          id="lastName"
+          value={lastName}
+          onChange={(event) => setLastName(event.target.value)}
         />{" "}
         <label htmlFor="email">Email:</label>
         <input
